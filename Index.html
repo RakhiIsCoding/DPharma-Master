@@ -1,0 +1,2373 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPharm Master - Learn. Practice. Test. Revise.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        pharm: {
+                            blue: '#1e40af',
+                            teal: '#0d9488',
+                            purple: '#6d28d9',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom UI enhancements */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .active-tab { border-bottom: 3px solid #16a34a; color: #16a34a; font-weight: 600; }
+    </style>
+</head>
+<body class="h-full text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white flex flex-col bg-slate-50 max-w-md md:max-w-4xl mx-auto shadow-2xl relative border-x border-slate-200">
+
+    <!-- Top Header Bar -->
+    <header id="top-header" class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleSideMenu()" class="p-2 text-slate-600 hover:text-brand-600 rounded-lg hover:bg-slate-100 transition">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                    <i class="fa-solid fa-prescription"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-base leading-tight">DPharm <span class="text-brand-600">Master</span></h1>
+                    <p class="text-[10px] text-slate-500 font-medium tracking-wide uppercase">PCI ER-2020 Compliant</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="openSearchModal()" class="p-2 text-slate-600 hover:text-brand-600 rounded-lg hover:bg-slate-100 transition" title="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button onclick="navigateTo('ai-teacher')" class="p-2 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition flex items-center space-x-1" title="AI Teacher">
+                <i class="fa-solid fa-robot text-sm"></i>
+                <span class="text-xs font-semibold hidden sm:inline">AI Help</span>
+            </button>
+            <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs border border-brand-300">
+                DP
+            </div>
+        </div>
+    </header>
+
+    <!-- Slide-out Navigation Drawer -->
+    <div id="side-drawer" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden transition-opacity opacity-0" onclick="toggleSideMenu()">
+        <div class="w-72 bg-white h-full shadow-2xl flex flex-col justify-between transform -translate-x-full transition-transform duration-300" onclick="event.stopPropagation()" id="drawer-content">
+            <div class="p-4 border-b border-slate-100 bg-gradient-to-r from-brand-900 to-brand-700 text-white">
+                <div class="flex justify-between items-center mb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center font-bold text-xl">
+                            💊
+                        </div>
+                        <span class="font-bold text-lg tracking-tight">DPharm Master</span>
+                    </div>
+                    <button onclick="toggleSideMenu()" class="text-white/80 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div id="drawer-user-info" class="text-xs text-brand-100 bg-black/20 p-2.5 rounded-lg border border-white/10">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto py-3 px-2 space-y-1 text-sm text-slate-700 font-medium">
+                <button onclick="drawerNavigate('home')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-house text-brand-600 w-5"></i><span>Home Dashboard</span>
+                </button>
+                <button onclick="drawerNavigate('study')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-book-open text-blue-600 w-5"></i><span>Syllabus & Notes</span>
+                </button>
+                <button onclick="drawerNavigate('question-bank')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-database text-teal-600 w-5"></i><span>Question Bank</span>
+                </button>
+                <button onclick="drawerNavigate('pyqs')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-certificate text-amber-600 w-5"></i><span>Verified PYQs</span>
+                </button>
+                <button onclick="drawerNavigate('tests')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-vial text-rose-600 w-5"></i><span>Tests & Mocks</span>
+                </button>
+                <button onclick="drawerNavigate('revision')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-rotate text-purple-600 w-5"></i><span>Revision & Flashcards</span>
+                </button>
+                <div class="pt-2 pb-1 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">AI & Learning Tools</div>
+                <button onclick="drawerNavigate('ai-teacher')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-purple-50 text-purple-700 transition">
+                    <i class="fa-solid fa-robot text-purple-600 w-5"></i><span>AI D.Pharm Teacher</span>
+                </button>
+                <button onclick="drawerNavigate('ai-solver')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-purple-50 text-purple-700 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-600 w-5"></i><span>AI Question Solver</span>
+                </button>
+                <button onclick="drawerNavigate('study-planner')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-calendar-check text-emerald-600 w-5"></i><span>Study Planner</span>
+                </button>
+                <div class="pt-2 pb-1 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Personal Storage</div>
+                <button onclick="drawerNavigate('bookmarks')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-bookmark text-amber-500 w-5"></i><span>My Bookmarks</span>
+                </button>
+                <button onclick="drawerNavigate('wrong-questions')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 w-5"></i><span>My Mistakes</span>
+                </button>
+                <button onclick="drawerNavigate('progress')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-chart-line text-indigo-600 w-5"></i><span>Progress Analytics</span>
+                </button>
+                <div class="pt-2 pb-1 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">System</div>
+                <button onclick="drawerNavigate('admin')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition text-slate-600">
+                    <i class="fa-solid fa-user-gear text-slate-500 w-5"></i><span>Admin Verification Panel</span>
+                </button>
+            </div>
+
+            <div class="p-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+                <span>PCI ER-2020 v2.4</span>
+                <button onclick="openOnboardingModal()" class="text-brand-600 font-semibold hover:underline">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Scrollable App Canvas -->
+    <main id="app-viewport" class="flex-1 overflow-y-auto pb-20 p-4">
+        <!-- Dynamic Views will be injected here -->
+    </main>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md md:max-w-4xl mx-auto bg-white/95 backdrop-blur border-t border-slate-200 px-2 py-1.5 flex justify-around items-center z-40 shadow-lg">
+        <button onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center py-1 px-3 text-brand-600 transition">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-0.5">Home</span>
+        </button>
+        <button onclick="navigateTo('study')" id="nav-study" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-brand-600 transition">
+            <i class="fa-solid fa-book text-lg"></i>
+            <span class="text-[10px] font-medium mt-0.5">Study</span>
+        </button>
+        <button onclick="navigateTo('question-bank')" id="nav-practice" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-brand-600 transition">
+            <i class="fa-solid fa-square-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-0.5">Practice</span>
+        </button>
+        <button onclick="navigateTo('tests')" id="nav-tests" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-brand-600 transition">
+            <i class="fa-solid fa-vial-circle-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-0.5">Tests</span>
+        </button>
+        <button onclick="navigateTo('progress')" id="nav-progress" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-brand-600 transition">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[10px] font-medium mt-0.5">Progress</span>
+        </button>
+    </nav>
+
+    <!-- Global Search Modal -->
+    <div id="search-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-10 px-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 animate-in fade-in zoom-in duration-150">
+            <div class="p-3 border-b border-slate-100 flex items-center space-x-2 bg-slate-50">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 pl-2"></i>
+                <input type="text" id="global-search-input" onkeyup="handleGlobalSearch(this.value)" placeholder="Search subjects, chapters, notes, questions, PYQs..." class="w-full bg-transparent border-none text-slate-800 focus:outline-none text-sm p-1">
+                <button onclick="closeSearchModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="search-results-container" class="max-h-96 overflow-y-auto p-3 space-y-2 text-xs">
+                <div class="text-center py-8 text-slate-400">
+                    <i class="fa-solid fa-capsules text-3xl mb-2 opacity-50"></i>
+                    <p>Type keywords like "tablet", "aspirin", "pharmacokinetics", or "PCI Act"...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-900">Welcome to DPharm Master</h2>
+                <p class="text-xs text-slate-500">Configure your PCI ER-2020 Academic Profile</p>
+            </div>
+            
+            <form id="onboarding-form" onsubmit="saveOnboardingProfile(event)" class="space-y-4 text-xs font-medium">
+                <div>
+                    <label class="block text-slate-700 mb-1">Student Full Name</label>
+                    <input type="text" id="ob-name" required placeholder="e.g. Rahul Sharma" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 mb-1">D.Pharm Part / Year</label>
+                    <select id="ob-part" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <option value="Part I">Part I (1st Year - 5 Subjects)</option>
+                        <option value="Part II">Part II (2nd Year - 6 Subjects)</option>
+                        <option value="Both">Both / Exit Exam Prep</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 mb-1">Board / University / Institution</label>
+                    <input type="text" id="ob-board" required placeholder="e.g. BTEUP, MSBTE, Rajiv Gandhi Univ, RGUHS" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-700 mb-1">Academic Year</label>
+                        <input type="text" id="ob-year" required placeholder="2025-2026" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-700 mb-1">Preferred Language</label>
+                        <select id="ob-lang" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="English">English</option>
+                            <option value="Hinglish">Hinglish (Mix)</option>
+                            <option value="Hindi">Hindi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 mb-1">Daily Target Study Time</label>
+                    <select id="ob-time" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        <option value="30 mins">30 Minutes / day</option>
+                        <option value="1 hour">1 Hour / day</option>
+                        <option value="2 hours" selected>2 Hours / day</option>
+                        <option value="3+ hours">3+ Hours / day</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg transition text-sm mt-4">
+                    Save Profile & Start Learning
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* Comprehensive PCI ER-2020 D.Pharm Core Curriculum Database */
+        const APP_DB = {
+            syllabusVersion: "PCI ER-2020",
+            regulatoryFramework: "Pharmacy Council of India (Education Regulations 2020)",
+            parts: [
+                {
+                    id: "part-1",
+                    name: "Part I (1st Year)",
+                    subjects: [
+                        {
+                            id: "pharmaceutics",
+                            code: "ER20-11T",
+                            name: "Pharmaceutics",
+                            icon: "fa-mortar-pestle",
+                            color: "bg-blue-50 text-blue-600 border-blue-200",
+                            chapters: [
+                                {
+                                    id: "ph-ch1",
+                                    title: "1. History of Pharmacy & Pharmacopoeias",
+                                    topics: [
+                                        "History of Pharmacy profession in India",
+                                        "Pharmacy as a Career",
+                                        "Indian Pharmacopoeia (IP), BP, USP, International Pharmacopoeia",
+                                        "Salient features of IP 2018/2022 editions"
+                                    ],
+                                    questionsCount: 42,
+                                    pyqsCount: 15
+                                },
+                                {
+                                    id: "ph-ch2",
+                                    title: "2. Packaging Materials",
+                                    topics: [
+                                        "Types, Selection criteria & Packaging materials",
+                                        "Glass containers: Types, evaluation, advantages/disadvantages",
+                                        "Metals, Plastics & Rubber closures"
+                                    ],
+                                    questionsCount: 30,
+                                    pyqsCount: 8
+                                },
+                                {
+                                    id: "ph-ch3",
+                                    title: "3. Pharmaceutical Aids and Preservatives",
+                                    topics: [
+                                        "Organoleptic agents: Colorants, Flavouring agents, Sweeteners",
+                                        "Preservatives: Definition, classification, ideal properties, mechanism"
+                                    ],
+                                    questionsCount: 25,
+                                    pyqsCount: 6
+                                },
+                                {
+                                    id: "ph-ch4",
+                                    title: "4. Unit Operations",
+                                    topics: [
+                                        "Size Reduction: Principles, Hammer mill, Ball mill",
+                                        "Size Separation: Sieves, Cyclone separator",
+                                        "Mixing: Double cone blender, Silverson emulsifier",
+                                        "Filtration: Theory, Membrane filter, Sintered glass filter",
+                                        "Drying: Fluidized Bed Dryer (FBD), Freeze drying",
+                                        "Extraction: Maceration, Percolation, Soxhlet extraction"
+                                    ],
+                                    questionsCount: 65,
+                                    pyqsCount: 22
+                                },
+                                {
+                                    id: "ph-ch5",
+                                    title: "5. Pharmaceutical Dosage Forms",
+                                    topics: [
+                                        "Tablets: Types, manufacturing steps, defects, evaluation",
+                                        "Capsules: Hard & Soft gelatin capsules",
+                                        "Liquid Orals: Syrups, Elixirs, Emulsions, Suspensions",
+                                        "Topical Preparations: Ointments, Creams, Gels, Pastes",
+                                        "Sterile Formulations: Parenterals, Ophthalmic products"
+                                    ],
+                                    questionsCount: 80,
+                                    pyqsCount: 28
+                                },
+                                {
+                                    id: "ph-ch6",
+                                    title: "6. Manufacturing Plants, QA/QC & GMP",
+                                    topics: [
+                                        "Good Manufacturing Practices (GMP) basics",
+                                        "Quality Control (QC) vs Quality Assurance (QA)",
+                                        "Calibration and Validation concepts"
+                                    ],
+                                    questionsCount: 28,
+                                    pyqsCount: 10
+                                },
+                                {
+                                    id: "ph-ch7",
+                                    title: "7. Novel Drug Delivery Systems (NDDS)",
+                                    topics: [
+                                        "Introduction & classification of NDDS",
+                                        "Liposomes, Niosomes, Transdermal patches, Sustained release formulations"
+                                    ],
+                                    questionsCount: 20,
+                                    pyqsCount: 5
+                                }
+                            ]
+                        },
+                        {
+                            id: "pharm-chem",
+                            code: "ER20-12T",
+                            name: "Pharmaceutical Chemistry",
+                            icon: "fa-flask",
+                            color: "bg-emerald-50 text-emerald-600 border-emerald-200",
+                            chapters: [
+                                {
+                                    id: "pc-ch1",
+                                    title: "1. Intro to Chem, Errors & Impurities",
+                                    topics: [
+                                        "Sources and types of errors, Precision & Accuracy",
+                                        "Impurities in Pharmaceuticals: Sources & Limit tests",
+                                        "Limit test for Chloride, Sulphate, Iron, Heavy metals, Arsenic"
+                                    ],
+                                    questionsCount: 38,
+                                    pyqsCount: 14
+                                },
+                                {
+                                    id: "pc-ch2",
+                                    title: "2. Volumetric and Gravimetric Analysis",
+                                    topics: [
+                                        "Fundamentals of Volumetric Analysis: Acid-Base, Redox, Complexometric titration",
+                                        "Gravimetric Analysis steps and Applications"
+                                    ],
+                                    questionsCount: 32,
+                                    pyqsCount: 11
+                                },
+                                {
+                                    id: "pc-ch3",
+                                    title: "3. Inorganic Pharmaceuticals",
+                                    topics: [
+                                        "Haematinics: Ferrous sulphate, Ferrous fumarate",
+                                        "Gastrointestinal agents: Antacids, Antidotes",
+                                        "Topical agents, Dental products, Medicinal gases"
+                                    ],
+                                    questionsCount: 40,
+                                    pyqsCount: 12
+                                },
+                                {
+                                    id: "pc-ch4",
+                                    title: "4. Nomenclature of Organic Systems",
+                                    topics: [
+                                        "IUPAC nomenclature rules for heterocyclic systems",
+                                        "Structure and naming of fused rings"
+                                    ],
+                                    questionsCount: 22,
+                                    pyqsCount: 7
+                                },
+                                {
+                                    id: "pc-ch5",
+                                    title: "5. Drugs Acting on CNS",
+                                    topics: [
+                                        "General Anaesthetics, Sedatives & Hypnotics",
+                                        "Antipsychotics, Anticonvulsants, Antidepressants"
+                                    ],
+                                    questionsCount: 45,
+                                    pyqsCount: 16
+                                },
+                                {
+                                    id: "pc-ch6",
+                                    title: "6. Drugs Acting on ANS",
+                                    topics: [
+                                        "Sympathomimetic & Parasympathomimetic agents",
+                                        "Adrenergic & Cholinergic blockers"
+                                    ],
+                                    questionsCount: 35,
+                                    pyqsCount: 10
+                                },
+                                {
+                                    id: "pc-ch7",
+                                    title: "7. Cardiovascular Drugs",
+                                    topics: [
+                                        "Anti-hypertensives, Anti-arrhythmics, Anti-anginal drugs",
+                                        "Structure-Activity relationship (SAR) highlights"
+                                    ],
+                                    questionsCount: 40,
+                                    pyqsCount: 13
+                                },
+                                {
+                                    id: "pc-ch8",
+                                    title: "8. Diuretics & Hypoglycemic Agents",
+                                    topics: [
+                                        "Loop diuretics, Thiazides, Potassium-sparing diuretics",
+                                        "Insulin, Oral hypoglycemics (Metformin, Glibenclamide)"
+                                    ],
+                                    questionsCount: 30,
+                                    pyqsCount: 9
+                                },
+                                {
+                                    id: "pc-ch9",
+                                    title: "9. Analgesic & Anti-inflammatory Agents",
+                                    topics: [
+                                        "Narcotic analgesics (Morphine analogues)",
+                                        "NSAIDs: Aspirin, Paracetamol, Ibuprofen, Diclofenac"
+                                    ],
+                                    questionsCount: 36,
+                                    pyqsCount: 12
+                                },
+                                {
+                                    id: "pc-ch10",
+                                    title: "10. Anti-infective & Antibiotic Agents",
+                                    topics: [
+                                        "Antifungal, Antiviral, Antimalarial, Anti-tubercular drugs",
+                                        "Penicillins, Cephalosporins, Aminoglycosides, Fluoroquinolones"
+                                    ],
+                                    questionsCount: 55,
+                                    pyqsCount: 18
+                                }
+                            ]
+                        },
+                        {
+                            id: "pharmacognosy",
+                            code: "ER20-13T",
+                            name: "Pharmacognosy",
+                            icon: "fa-leaf",
+                            color: "bg-amber-50 text-amber-600 border-amber-200",
+                            chapters: [
+                                {
+                                    id: "pg-ch1",
+                                    title: "1. Intro & Classification of Crude Drugs",
+                                    topics: [
+                                        "Definition, history & scope of Pharmacognosy",
+                                        "Alphabetical, Taxonomical, Morphological, Pharmacological, Chemical classification"
+                                    ],
+                                    questionsCount: 30,
+                                    pyqsCount: 10
+                                },
+                                {
+                                    id: "pg-ch2",
+                                    title: "2. Quality Control of Crude Drugs",
+                                    topics: [
+                                        "Adulteration of crude drugs",
+                                        "Evaluation methods: Organoleptic, Microscopic, Physical, Chemical, Biological"
+                                    ],
+                                    questionsCount: 34,
+                                    pyqsCount: 12
+                                },
+                                {
+                                    id: "pg-ch3",
+                                    title: "3. Phytoconstituents & Important Crude Drugs",
+                                    topics: [
+                                        "Alkaloids, Glycosides, Volatile oils, Tannins, Resins",
+                                        "Morphological & chemical study: Senna, Digitalis, Cinchona, Opium, Rauwolfia, Clove, Asafoetida"
+                                    ],
+                                    questionsCount: 75,
+                                    pyqsCount: 25
+                                },
+                                {
+                                    id: "pg-ch4",
+                                    title: "4. Plant Fibres, Herbs & Formulations",
+                                    topics: [
+                                        "Cotton, Silk, Wool, Surgical dressings",
+                                        "Traditional Systems of Medicine: Ayurveda, Siddha, Unani, Homeopathy",
+                                        "Herbs as health foods, Herbal cosmetics"
+                                    ],
+                                    questionsCount: 42,
+                                    pyqsCount: 14
+                                }
+                            ]
+                        },
+                        {
+                            id: "hap",
+                            code: "ER20-14T",
+                            name: "Human Anatomy & Physiology",
+                            icon: "fa-heart-pulse",
+                            color: "bg-rose-50 text-rose-600 border-rose-200",
+                            chapters: [
+                                {
+                                    id: "hap-ch1",
+                                    title: "1. Scope, Cell & Tissues",
+                                    topics: [
+                                        "Scope of Anatomy & Physiology, Medical terminology",
+                                        "Cell structure, organelles, transport across membranes",
+                                        "Epithelial, Connective, Muscular & Nervous tissues"
+                                    ],
+                                    questionsCount: 40,
+                                    pyqsCount: 15
+                                },
+                                {
+                                    id: "hap-ch2",
+                                    title: "2. Osseous & Haemopoietic System",
+                                    topics: [
+                                        "Skeletal system: Bones, Joints, Axial & Appendicular skeleton",
+                                        "Blood composition, RBC, WBC, Blood groups, Coagulation mechanism"
+                                    ],
+                                    questionsCount: 48,
+                                    pyqsCount: 18
+                                },
+                                {
+                                    id: "hap-ch3",
+                                    title: "3. Cardiovascular & Lymphatic System",
+                                    topics: [
+                                        "Heart anatomy, Cardiac cycle, ECG, Blood pressure regulation",
+                                        "Lymph, Lymph nodes, Spleen & Lymphatic circulation"
+                                    ],
+                                    questionsCount: 52,
+                                    pyqsCount: 20
+                                },
+                                {
+                                    id: "hap-ch4",
+                                    title: "4. Respiratory & Digestive Systems",
+                                    topics: [
+                                        "Respiratory organs, Mechanism of respiration, Gas exchange",
+                                        "GI tract organs, Digestion & absorption, Digestive enzymes"
+                                    ],
+                                    questionsCount: 50,
+                                    pyqsCount: 19
+                                },
+                                {
+                                    id: "hap-ch5",
+                                    title: "5. Nervous System & Sense Organs",
+                                    topics: [
+                                        "Central Nervous System: Brain & Spinal cord",
+                                        "Autonomic Nervous System: Sympathetic vs Parasympathetic",
+                                        "Eye, Ear, Nose, Tongue, Skin anatomy & function"
+                                    ],
+                                    questionsCount: 55,
+                                    pyqsCount: 21
+                                }
+                            ]
+                        },
+                        {
+                            id: "social-pharmacy",
+                            code: "ER20-15T",
+                            name: "Social Pharmacy",
+                            icon: "fa-users text-teal-600",
+                            color: "bg-teal-50 text-teal-600 border-teal-200",
+                            chapters: [
+                                {
+                                    id: "sp-ch1",
+                                    title: "1. Intro to Social Pharmacy & Healthcare",
+                                    topics: [
+                                        "Health definition, Determinants, Indicators",
+                                        "National Health Policy, Preventive Healthcare principles",
+                                        "Microbiology basics: Bacteria, Virus, Fungi, Vaccine types"
+                                    ],
+                                    questionsCount: 35,
+                                    pyqsCount: 12
+                                },
+                                {
+                                    id: "sp-ch2",
+                                    title: "2. Nutrition, Health & Epidemiology",
+                                    topics: [
+                                        "Balanced diet, Vitamins, Minerals, Deficiency diseases",
+                                        "Epidemiology of communicable diseases: COVID-19, TB, Malaria, HIV",
+                                        "National Health Programmes in India"
+                                    ],
+                                    questionsCount: 40,
+                                    pyqsCount: 15
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "part-2",
+                    name: "Part II (2nd Year)",
+                    subjects: [
+                        {
+                            id: "pharmacology",
+                            code: "ER20-21T",
+                            name: "Pharmacology",
+                            icon: "fa-pills",
+                            color: "bg-purple-50 text-purple-600 border-purple-200",
+                            chapters: [
+                                {
+                                    id: "pcol-ch1",
+                                    title: "1. General Pharmacology",
+                                    topics: [
+                                        "Routes of drug administration",
+                                        "Pharmacokinetics: Absorption, Distribution, Metabolism, Excretion (ADME)",
+                                        "Pharmacodynamics: Receptor mechanism, Agonists, Antagonists",
+                                        "Drug interactions & Adverse Drug Reactions (ADR)"
+                                    ],
+                                    questionsCount: 60,
+                                    pyqsCount: 22
+                                },
+                                {
+                                    id: "pcol-ch2",
+                                    title: "2. Drugs Acting on ANS & CNS",
+                                    topics: [
+                                        "Cholinergic & Anticholinergic drugs",
+                                        "Adrenergic & Anti-adrenergic drugs",
+                                        "Sedatives, Hypnotics, Antiepileptics, Antipsychotics, NSAIDs"
+                                    ],
+                                    questionsCount: 68,
+                                    pyqsCount: 24
+                                },
+                                {
+                                    id: "pcol-ch3",
+                                    title: "3. Cardiovascular & Respiratory Drugs",
+                                    topics: [
+                                        "Anti-hypertensives, Anti-anginal, Anti-arrhythmics, Cardiac glycosides",
+                                        "Drugs for Asthma, COPD, Expectorants, Antitussives"
+                                    ],
+                                    questionsCount: 50,
+                                    pyqsCount: 18
+                                },
+                                {
+                                    id: "pcol-ch4",
+                                    title: "4. Chemotherapeutic Agents",
+                                    topics: [
+                                        "Penicillins, Cephalosporins, Fluoroquinolones, Tetracyclines",
+                                        "Anti-tubercular, Anti-leprotic, Antifungal, Antiviral drugs"
+                                    ],
+                                    questionsCount: 55,
+                                    pyqsCount: 20
+                                }
+                            ]
+                        },
+                        {
+                            id: "community-pharmacy",
+                            code: "ER20-22T",
+                            name: "Community Pharmacy & Management",
+                            icon: "fa-store",
+                            color: "bg-indigo-50 text-indigo-600 border-indigo-200",
+                            chapters: [
+                                {
+                                    id: "cpm-ch1",
+                                    title: "1. Practice, Prescription & Counselling",
+                                    topics: [
+                                        "Community Pharmacy setup, legal requirements",
+                                        "Prescription parts, handling, pricing & errors",
+                                        "Patient counselling steps, Medication adherence techniques",
+                                        "Communication skills with patients & prescribers"
+                                    ],
+                                    questionsCount: 45,
+                                    pyqsCount: 16
+                                },
+                                {
+                                    id: "cpm-ch2",
+                                    title: "2. OTC Drugs & Health Screening Services",
+                                    topics: [
+                                        "Over-The-Counter (OTC) medication rational use",
+                                        "Health screening: Blood pressure, Blood glucose, BMI measurement",
+                                        "Inventory management: ABC, VED analysis, reorder levels"
+                                    ],
+                                    questionsCount: 40,
+                                    pyqsCount: 14
+                                }
+                            ]
+                        },
+                        {
+                            id: "biochemistry",
+                            code: "ER20-23T",
+                            name: "Biochemistry & Clinical Pathology",
+                            icon: "fa-dna",
+                            color: "bg-cyan-50 text-cyan-600 border-cyan-200",
+                            chapters: [
+                                {
+                                    id: "bio-ch1",
+                                    title: "1. Biomolecules: Carbs, Proteins, Lipids & Nucleic Acids",
+                                    topics: [
+                                        "Carbohydrates classification, Glycolysis, TCA cycle, Diabetes",
+                                        "Proteins, Amino acids, Structure, Metabolism, Urea cycle",
+                                        "Lipids classification, Beta oxidation, Cholesterol, Lipoproteins",
+                                        "DNA, RNA structure, Replication, Transcription, Translation"
+                                    ],
+                                    questionsCount: 70,
+                                    pyqsCount: 26
+                                },
+                                {
+                                    id: "bio-ch2",
+                                    title: "2. Enzymes, Vitamins & Organ Function Tests",
+                                    topics: [
+                                        "Enzyme kinetics, Coenzymes, Enzyme inhibition",
+                                        "Fat-soluble & Water-soluble vitamins, deficiency disorders",
+                                        "Liver Function Tests (LFT), Renal Function Tests (RFT), Blood/Urine pathology"
+                                    ],
+                                    questionsCount: 58,
+                                    pyqsCount: 20
+                                }
+                            ]
+                        },
+                        {
+                            id: "pharmacotherapeutics",
+                            code: "ER20-24T",
+                            name: "Pharmacotherapeutics",
+                            icon: "fa-user-doctor",
+                            color: "bg-sky-50 text-sky-600 border-sky-200",
+                            chapters: [
+                                {
+                                    id: "pt-ch1",
+                                    title: "1. Rational Drug Use & Disease Management I",
+                                    topics: [
+                                        "Rational Use of Medicines, Essential Medicine List (EML)",
+                                        "Cardiovascular: Hypertension, Angina, Myocardial Infarction, Heart Failure",
+                                        "Respiratory: Asthma, COPD",
+                                        "Endocrine: Diabetes Mellitus, Thyroid disorders"
+                                    ],
+                                    questionsCount: 50,
+                                    pyqsCount: 17
+                                },
+                                {
+                                    id: "pt-ch2",
+                                    title: "2. Disease Management II & AMR",
+                                    topics: [
+                                        "CNS: Epilepsy, Parkinsonism, Depression",
+                                        "Infectious Diseases: Pneumonia, UTI, TB, Malaria, Typhoid",
+                                        "Antimicrobial Resistance (AMR) prevention strategies"
+                                    ],
+                                    questionsCount: 48,
+                                    pyqsCount: 16
+                                }
+                            ]
+                        },
+                        {
+                            id: "hospital-pharmacy",
+                            code: "ER20-25T",
+                            name: "Hospital & Clinical Pharmacy",
+                            icon: "fa-hospital",
+                            color: "bg-teal-50 text-teal-700 border-teal-200",
+                            chapters: [
+                                {
+                                    id: "hcp-ch1",
+                                    title: "1. Hospital Setup & Drug Distribution",
+                                    topics: [
+                                        "Hospital Pharmacy organization, Pharmacy and Therapeutics Committee (PTC)",
+                                        "Hospital Formulary development",
+                                        "Drug distribution systems: Outpatient, Inpatient, Unit dose, Floor stock"
+                                    ],
+                                    questionsCount: 42,
+                                    pyqsCount: 15
+                                },
+                                {
+                                    id: "hcp-ch2",
+                                    title: "2. Clinical Pharmacy, Poisoning & Pharmacovigilance",
+                                    topics: [
+                                        "Clinical Pharmacy duties, Ward round participation",
+                                        "Poisoning management, Antidotes",
+                                        "Pharmacovigilance system in India, ADR reporting",
+                                        "Medication errors classification and prevention"
+                                    ],
+                                    questionsCount: 46,
+                                    pyqsCount: 16
+                                }
+                            ]
+                        },
+                        {
+                            id: "pharmacy-law",
+                            code: "ER20-26T",
+                            name: "Pharmacy Law & Ethics",
+                            icon: "fa-scale-balanced",
+                            color: "bg-slate-100 text-slate-700 border-slate-300",
+                            chapters: [
+                                {
+                                    id: "law-ch1",
+                                    title: "1. Pharmacy Act 1948 & Rules",
+                                    topics: [
+                                        "PCI constitution, functions, Education Regulations",
+                                        "State Pharmacy Councils, Registration of Pharmacists, Offences & Penalties"
+                                    ],
+                                    questionsCount: 35,
+                                    pyqsCount: 14
+                                },
+                                {
+                                    id: "law-ch2",
+                                    title: "2. Drugs & Cosmetics Act 1940 & Rules 1945",
+                                    topics: [
+                                        "Definitions: Drug, Cosmetic, Misbranded, Adulterated, Spurious drugs",
+                                        "Schedules to the Rules (Schedule C/C1, G, H, H1, X, M, Y, P, W)",
+                                        "Import, Manufacture, Sale licenses, Drug Inspector powers"
+                                    ],
+                                    questionsCount: 65,
+                                    pyqsCount: 25
+                                },
+                                {
+                                    id: "law-ch3",
+                                    title: "3. NDPS, Magic Remedies & Code of Ethics",
+                                    topics: [
+                                        "Narcotic Drugs and Psychotropic Substances (NDPS) Act 1985",
+                                        "Drugs and Magic Remedies (Objectionable Advertisements) Act 1954",
+                                        "Code of Pharmaceutical Ethics in relation to Job, Trade, Profession",
+                                        "NPPA, DPCO, NLEM pricing regulations"
+                                    ],
+                                    questionsCount: 45,
+                                    pyqsCount: 18
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        /* Sample Question Repository with strict verified PYQ metadata and source tags */
+        const QUESTION_BANK = [
+            {
+                id: "q-101",
+                part: "part-1",
+                subject: "pharmaceutics",
+                chapter: "ph-ch1",
+                type: "MCQ",
+                text: "The First Edition of the Indian Pharmacopoeia (IP) was published in which year?",
+                options: ["1948", "1955", "1966", "1985"],
+                correctAnswer: 1,
+                explanation: "The first edition of Indian Pharmacopoeia was published in 1955 under the chairmanship of Dr. B.N. Ghosh.",
+                difficulty: "Easy",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2021,
+                board: "BTEUP",
+                verified: true
+            },
+            {
+                id: "q-102",
+                part: "part-1",
+                subject: "pharmaceutics",
+                chapter: "ph-ch4",
+                type: "MCQ",
+                text: "Which mill works on the combined mechanism of Impact and Attrition?",
+                options: ["Hammer Mill", "Disintegrator", "Ball Mill", "Cutter Mill"],
+                correctAnswer: 2,
+                explanation: "Ball Mill and Fluid Energy Mill both work on the dual mechanism of impact and attrition.",
+                difficulty: "Medium",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2023,
+                board: "MSBTE",
+                verified: true
+            },
+            {
+                id: "q-103",
+                part: "part-1",
+                subject: "pharm-chem",
+                chapter: "pc-ch1",
+                type: "MCQ",
+                text: "In the Limit Test for Chloride, the opalescence/turbidity produced is compared against a standard containing known amount of:",
+                options: ["Sodium Chloride", "Hydrochloric Acid", "Silver Nitrate", "Barium Chloride"],
+                correctAnswer: 0,
+                explanation: "Standard solution is prepared by taking known concentration of Sodium Chloride (NaCl) reacting with Silver Nitrate.",
+                difficulty: "Medium",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2022,
+                board: "RGUHS",
+                verified: true
+            },
+            {
+                id: "q-104",
+                part: "part-1",
+                subject: "pharmacognosy",
+                chapter: "pg-ch3",
+                type: "MCQ",
+                text: "Which crude drug contains C-glycosides and responds to Modified Borntrager's Test?",
+                options: ["Senna", "Aloe", "Rhubarb", "Digitalis"],
+                correctAnswer: 1,
+                explanation: "Aloe contains C-glycosides (Aloin) which require Modified Borntrager's test (using FeCl3) for identification.",
+                difficulty: "Hard",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2020,
+                board: "BTEUP",
+                verified: true
+            },
+            {
+                id: "q-105",
+                part: "part-1",
+                subject: "hap",
+                chapter: "hap-ch2",
+                type: "MCQ",
+                text: "Which blood cell type is responsible for producing antibodies?",
+                options: ["Erythrocytes", "Neutrophils", "B-Lymphocytes", "Blood Platelets"],
+                correctAnswer: 2,
+                explanation: "B-Lymphocytes differentiate into plasma cells which synthesize specific antibodies (Immunoglobulins).",
+                difficulty: "Easy",
+                marks: 1,
+                sourceType: "ORIGINAL_QUESTION",
+                sourceYear: 2024,
+                board: "PCI Model",
+                verified: true
+            },
+            {
+                id: "q-201",
+                part: "part-2",
+                subject: "pharmacy-law",
+                chapter: "law-ch2",
+                type: "MCQ",
+                text: "Good Manufacturing Practices (GMP) and requirements of factory premises are detailed under which Schedule of D&C Rules?",
+                options: ["Schedule M", "Schedule Y", "Schedule P", "Schedule X"],
+                correctAnswer: 0,
+                explanation: "Schedule M prescribes Good Manufacturing Practices (GMP) for pharmaceutical manufacturing premises and equipment.",
+                difficulty: "Medium",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2022,
+                board: "BTEUP",
+                verified: true
+            },
+            {
+                id: "q-202",
+                part: "part-2",
+                subject: "pharmacology",
+                chapter: "pcol-ch1",
+                type: "MCQ",
+                text: "Which route of administration offers 100% systemic bioavailability by definition?",
+                options: ["Oral", "Intramuscular", "Intravenous (IV)", "Subcutaneous"],
+                correctAnswer: 2,
+                explanation: "By definition, the Intravenous (IV) route places the drug directly into systemic circulation, yielding 100% bioavailability.",
+                difficulty: "Easy",
+                marks: 1,
+                sourceType: "MODEL_QUESTION",
+                sourceYear: 2024,
+                board: "PCI Standard",
+                verified: true
+            },
+            {
+                id: "q-203",
+                part: "part-2",
+                subject: "biochemistry",
+                chapter: "bio-ch1",
+                type: "MCQ",
+                text: "The end product of Anaerobic Glycolysis in human skeletal muscle is:",
+                options: ["Pyruvate", "Lactate", "Acetyl-CoA", "Citrate"],
+                correctAnswer: 1,
+                explanation: "In absence of oxygen, pyruvate is converted to Lactate by Lactate Dehydrogenase (LDH) to regenerate NAD+.",
+                difficulty: "Medium",
+                marks: 1,
+                sourceType: "VERIFIED_PYQ",
+                sourceYear: 2023,
+                board: "MSBTE",
+                verified: true
+            }
+        ];
+
+        /* Pre-populated Flashcards for Quick Revision */
+        const FLASHCARDS = [
+            { id: "f1", subject: "Pharmaceutics", front: "What is the primary mechanism of Ball Mill?", back: "Impact and Attrition." },
+            { id: "f2", subject: "Pharmaceutical Chemistry", front: "What reagent is used in Limit Test for Iron?", back: "Thioglycollic acid in presence of Ammonia." },
+            { id: "f3", subject: "Pharmacognosy", front: "What chemical test identifies Anthraquinone Glycosides?", back: "Borntrager's Test (pink/red color in ammoniacal layer)." },
+            { id: "f4", subject: "HAP", front: "Which node is known as the natural pacemaker of the heart?", back: "Sinoatrial (SA) Node." },
+            { id: "f5", subject: "Pharmacy Law", front: "Which schedule controls Narcotic & Psychotropic Habit-forming drugs?", back: "Schedule X." }
+        ];
+
+        /* State Management Object */
+        let state = {
+            currentView: "home",
+            userProfile: {
+                name: "Student",
+                part: "Part I",
+                board: "BTEUP",
+                year: "2025-2026",
+                lang: "Hinglish",
+                studyTime: "2 hours",
+                streak: 4,
+                completedTopicsCount: 18,
+                totalAttemptedQs: 142,
+                correctCount: 112,
+            },
+            bookmarks: ["q-101", "q-201"],
+            wrongQuestions: ["q-104"],
+            customNotes: {},
+            testState: null,
+            activeFilterSubject: "all",
+            studyPlannerTasks: [
+                { id: "t1", day: "Today", text: "Pharmaceutics: Read History of IP Notes", done: true },
+                { id: "t2", day: "Today", text: "Pharm-Chem: Solve 10 Limit Test MCQs", done: false },
+                { id: "t3", day: "Tomorrow", text: "Pharmacognosy: Learn Alkaloid Classification", done: false }
+            ]
+        };
+
+        window.onload = function() {
+            loadSavedProfile();
+            renderApp();
+        };
+
+        function loadSavedProfile() {
+            const saved = localStorage.getItem('dpharm_profile');
+            if (saved) {
+                try {
+                    state.userProfile = JSON.parse(saved);
+                } catch(e) {}
+            } else {
+                openOnboardingModal();
+            }
+        }
+
+        function saveOnboardingProfile(e) {
+            e.preventDefault();
+            state.userProfile.name = document.getElementById('ob-name').value;
+            state.userProfile.part = document.getElementById('ob-part').value;
+            state.userProfile.board = document.getElementById('ob-board').value;
+            state.userProfile.year = document.getElementById('ob-year').value;
+            state.userProfile.lang = document.getElementById('ob-lang').value;
+            state.userProfile.studyTime = document.getElementById('ob-time').value;
+
+            localStorage.setItem('dpharm_profile', JSON.stringify(state.userProfile));
+            document.getElementById('onboarding-modal').classList.add('hidden');
+            renderApp();
+        }
+
+        function openOnboardingModal() {
+            document.getElementById('ob-name').value = state.userProfile.name !== "Student" ? state.userProfile.name : "";
+            document.getElementById('ob-board').value = state.userProfile.board || "";
+            document.getElementById('ob-year').value = state.userProfile.year || "2025-2026";
+            document.getElementById('onboarding-modal').classList.remove('hidden');
+        }
+
+        function toggleSideMenu() {
+            const drawer = document.getElementById('side-drawer');
+            const content = document.getElementById('drawer-content');
+            if (drawer.classList.contains('hidden')) {
+                // Update info before showing
+                document.getElementById('drawer-user-info').innerHTML = `
+                    <div class="font-bold text-white">${state.userProfile.name}</div>
+                    <div>${state.userProfile.part} • ${state.userProfile.board}</div>
+                    <div class="text-[10px] text-brand-200 mt-0.5">Target: ${state.userProfile.studyTime}/day</div>
+                `;
+                drawer.classList.remove('hidden');
+                setTimeout(() => {
+                    drawer.classList.remove('opacity-0');
+                    content.classList.remove('-translate-x-full');
+                }, 10);
+            } else {
+                drawer.classList.add('opacity-0');
+                content.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function drawerNavigate(viewName, params = null) {
+            toggleSideMenu();
+            navigateTo(viewName, params);
+        }
+
+        function updateBottomNav(view) {
+            const tabs = ['home', 'study', 'practice', 'tests', 'progress'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`nav-${tab}`);
+                if (btn) {
+                    if ((view === 'home' && tab === 'home') ||
+                        (view === 'study' && tab === 'study') ||
+                        ((view === 'question-bank' || view === 'pyqs') && tab === 'practice') ||
+                        ((view === 'tests' || view === 'test-runner') && tab === 'tests') ||
+                        (view === 'progress' && tab === 'progress')) {
+                        btn.className = "flex flex-col items-center py-1 px-3 text-brand-600 transition font-bold";
+                    } else {
+                        btn.className = "flex flex-col items-center py-1 px-3 text-slate-400 hover:text-brand-600 transition";
+                    }
+                }
+            });
+            // Update badge
+            const badge = document.getElementById('user-avatar-badge');
+            if (badge && state.userProfile.name) {
+                const parts = state.userProfile.name.split(' ');
+                badge.innerText = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0,2).toUpperCase();
+            }
+        }
+
+        function navigateTo(view, params = null) {
+            state.currentView = view;
+            state.viewParams = params;
+            updateBottomNav(view);
+            renderApp();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderApp() {
+            const viewport = document.getElementById('app-viewport');
+            
+            switch (state.currentView) {
+                case 'home':
+                    viewport.innerHTML = renderHomeView();
+                    break;
+                case 'study':
+                    viewport.innerHTML = renderStudyView();
+                    break;
+                case 'subject-detail':
+                    viewport.innerHTML = renderSubjectDetailView(state.viewParams);
+                    break;
+                case 'topic-detail':
+                    viewport.innerHTML = renderTopicDetailView(state.viewParams);
+                    break;
+                case 'question-bank':
+                    viewport.innerHTML = renderQuestionBankView();
+                    break;
+                case 'pyqs':
+                    viewport.innerHTML = renderPYQView();
+                    break;
+                case 'tests':
+                    viewport.innerHTML = renderTestsConfigView();
+                    break;
+                case 'test-runner':
+                    viewport.innerHTML = renderTestRunnerView();
+                    break;
+                case 'test-result':
+                    viewport.innerHTML = renderTestResultView();
+                    break;
+                case 'revision':
+                    viewport.innerHTML = renderRevisionView();
+                    break;
+                case 'ai-teacher':
+                    viewport.innerHTML = renderAITeacherView();
+                    break;
+                case 'ai-solver':
+                    viewport.innerHTML = renderAISolverView();
+                    break;
+                case 'study-planner':
+                    viewport.innerHTML = renderStudyPlannerView();
+                    break;
+                case 'bookmarks':
+                    viewport.innerHTML = renderBookmarksView();
+                    break;
+                case 'wrong-questions':
+                    viewport.innerHTML = renderWrongQuestionsView();
+                    break;
+                case 'progress':
+                    viewport.innerHTML = renderProgressView();
+                    break;
+                case 'admin':
+                    viewport.innerHTML = renderAdminView();
+                    break;
+                default:
+                    viewport.innerHTML = renderHomeView();
+            }
+        }
+
+        /* ---------------- VIEW TEMPLATES ---------------- */
+
+        function renderHomeView() {
+            const totalQs = state.userProfile.totalAttemptedQs || 1;
+            const accuracy = Math.round((state.userProfile.correctCount / totalQs) * 100);
+
+            return `
+                <div class="space-y-5 animate-in fade-in duration-200">
+                    <!-- Welcome & Status -->
+                    <div class="bg-gradient-to-r from-brand-800 to-brand-600 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-6 opacity-10 text-8xl">
+                            <i class="fa-solid fa-pills"></i>
+                        </div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
+                                    ${state.userProfile.part} • ${state.userProfile.board}
+                                </span>
+                                <h2 class="text-xl font-extrabold mt-1">Namaste, ${state.userProfile.name}! 👋</h2>
+                                <p class="text-xs text-brand-100 font-medium">Ready to master your Pharmacy syllabus today?</p>
+                            </div>
+                            <div class="text-center bg-white/10 backdrop-blur p-2 rounded-xl border border-white/20">
+                                <div class="text-lg font-black text-amber-300"><i class="fa-solid fa-fire"></i> ${state.userProfile.streak}</div>
+                                <div class="text-[9px] uppercase font-bold tracking-wider text-brand-100">Day Streak</div>
+                            </div>
+                        </div>
+
+                        <!-- Continue Learning Quick Card -->
+                        <div class="mt-4 bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/15 flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <div class="text-[10px] uppercase font-bold text-brand-200">Continue Learning</div>
+                                <div class="font-bold text-sm text-white">Pharmaceutics: Unit Operations</div>
+                                <div class="text-xs text-brand-100">Chapter 4 • Size Reduction & Mills</div>
+                            </div>
+                            <button onclick="navigateTo('topic-detail', {subjectId:'pharmaceutics', topicTitle:'Size Reduction: Principles, Hammer mill, Ball mill'})" class="px-3 py-2 bg-white text-brand-800 font-bold rounded-lg text-xs shadow hover:bg-brand-50 transition">
+                                Continue <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Core Quick Action Grid (6 Buttons) -->
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Quick Navigation</h3>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <button onclick="navigateTo('study')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-book-open"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">Study Notes</span>
+                                <span class="text-[10px] text-slate-400 block">Syllabus</span>
+                            </button>
+
+                            <button onclick="navigateTo('question-bank')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">Question Bank</span>
+                                <span class="text-[10px] text-slate-400 block">Topic MCQs</span>
+                            </button>
+
+                            <button onclick="navigateTo('pyqs')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">Verified PYQs</span>
+                                <span class="text-[10px] text-slate-400 block">Board Papers</span>
+                            </button>
+
+                            <button onclick="navigateTo('tests')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-vial"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">Take Test</span>
+                                <span class="text-[10px] text-slate-400 block">Max 50 Qs</span>
+                            </button>
+
+                            <button onclick="navigateTo('revision')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">Revision</span>
+                                <span class="text-[10px] text-slate-400 block">Flashcards</span>
+                            </button>
+
+                            <button onclick="navigateTo('ai-teacher')" class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-purple-500 hover:shadow transition text-center group">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-1.5 text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 block">AI Teacher</span>
+                                <span class="text-[10px] text-slate-400 block">Ask Doubts</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Today's Daily Challenge & Goals -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 font-bold flex items-center justify-center">
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900">Today's Study Targets</h4>
+                                    <p class="text-[10px] text-slate-500">${state.userProfile.studyTime} Daily Goal</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-md">66% Completed</span>
+                        </div>
+
+                        <div class="space-y-2 pt-1 text-xs">
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-circle-check text-brand-600"></i>
+                                    <span class="text-slate-700">Read 1 Chapter in Pharmaceutics</span>
+                                </div>
+                                <span class="text-[10px] font-semibold text-slate-400">Done</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-regular fa-circle text-slate-400"></i>
+                                    <span class="text-slate-700">Attempt 20 Practice Questions</span>
+                                </div>
+                                <button onclick="startQuickTest(20)" class="text-[10px] font-bold text-brand-600 hover:underline">Start</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Summary Card -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-xs text-slate-900 uppercase tracking-wider">Overall Progress Snapshot</h4>
+                            <button onclick="navigateTo('progress')" class="text-xs text-brand-600 font-bold hover:underline">Full Analytics</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center divide-x divide-slate-100">
+                            <div>
+                                <div class="text-lg font-black text-slate-800">28%</div>
+                                <div class="text-[10px] text-slate-500 font-medium">Syllabus Done</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-black text-slate-800">${state.userProfile.totalAttemptedQs}</div>
+                                <div class="text-[10px] text-slate-500 font-medium">Qs Solved</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-black text-emerald-600">${accuracy}%</div>
+                                <div class="text-[10px] text-slate-500 font-medium">Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weak Areas Focus Callout -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center justify-between text-xs">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-amber-900">Weak Topics Identified</div>
+                                <div class="text-[11px] text-amber-700">Drugs acting on CNS & Glycosides need revision.</div>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('revision')" class="px-2.5 py-1.5 bg-amber-600 text-white rounded-lg font-bold shadow text-[11px] shrink-0">
+                            Revise
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStudyView() {
+            const activePartId = state.selectedPart || "part-1";
+            const partObj = APP_DB.parts.find(p => p.id === activePartId) || APP_DB.parts[0];
+
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Syllabus & Notes</h2>
+                            <p class="text-xs text-slate-500">PCI ER-2020 Standard Curriculum</p>
+                        </div>
+                        <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-1 rounded-md">
+                            ${APP_DB.syllabusVersion}
+                        </span>
+                    </div>
+
+                    <!-- Part Toggle Tabs -->
+                    <div class="flex bg-slate-200 p-1 rounded-xl font-bold text-xs">
+                        <button onclick="state.selectedPart='part-1'; renderApp();" class="flex-1 py-2 rounded-lg text-center transition ${activePartId === 'part-1' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                            Part I (1st Year)
+                        </button>
+                        <button onclick="state.selectedPart='part-2'; renderApp();" class="flex-1 py-2 rounded-lg text-center transition ${activePartId === 'part-2' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}">
+                            Part II (2nd Year)
+                        </button>
+                    </div>
+
+                    <!-- Subjects List -->
+                    <div class="space-y-3">
+                        ${partObj.subjects.map(subj => `
+                            <div onclick="navigateTo('subject-detail', {subjectId: '${subj.id}'})" class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:border-brand-500 hover:shadow transition cursor-pointer">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl ${subj.color} flex items-center justify-center text-lg shadow-sm">
+                                            <i class="fa-solid ${subj.icon}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${subj.code}</div>
+                                            <h3 class="font-bold text-sm text-slate-900">${subj.name}</h3>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+                                </div>
+                                <div class="flex justify-between items-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+                                    <span>${subj.chapters.length} Chapters</span>
+                                    <span>${subj.chapters.reduce((acc, c) => acc + c.questionsCount, 0)} Questions</span>
+                                    <span class="text-brand-600 font-semibold">${subj.chapters.reduce((acc, c) => acc + c.pyqsCount, 0)} PYQs</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSubjectDetailView(params) {
+            let subjObj = null;
+            for (let p of APP_DB.parts) {
+                let found = p.subjects.find(s => s.id === params.subjectId);
+                if (found) { subjObj = found; break; }
+            }
+            if (!subjObj) subjObj = APP_DB.parts[0].subjects[0];
+
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <!-- Back Header -->
+                    <button onclick="navigateTo('study')" class="text-xs font-bold text-brand-600 flex items-center space-x-1 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i><span>Back to Syllabus</span>
+                    </button>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 rounded-xl ${subjObj.color} flex items-center justify-center text-xl shadow">
+                                <i class="fa-solid ${subjObj.icon}"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${subjObj.code}</span>
+                                <h2 class="text-lg font-extrabold text-slate-900">${subjObj.name}</h2>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-center text-xs font-bold">
+                            <button onclick="startSubjectTest('${subjObj.id}')" class="p-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition">
+                                <i class="fa-solid fa-vial block text-sm mb-1"></i>Test
+                            </button>
+                            <button onclick="navigateTo('question-bank')" class="p-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition">
+                                <i class="fa-solid fa-database block text-sm mb-1"></i>MCQs
+                            </button>
+                            <button onclick="navigateTo('pyqs')" class="p-2 bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition">
+                                <i class="fa-solid fa-certificate block text-sm mb-1"></i>PYQs
+                            </button>
+                            <button onclick="navigateTo('revision')" class="p-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition">
+                                <i class="fa-solid fa-rotate block text-sm mb-1"></i>Revise
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chapters Accordion / List -->
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-500">Chapters (${subjObj.chapters.length})</h3>
+                    <div class="space-y-3">
+                        ${subjObj.chapters.map(ch => `
+                            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                                <div class="p-3.5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                                    <div class="font-bold text-xs text-slate-800">${ch.title}</div>
+                                    <div class="text-[10px] font-semibold text-slate-500 space-x-2">
+                                        <span>${ch.questionsCount} Qs</span>
+                                        <span class="text-amber-600">${ch.pyqsCount} PYQs</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 divide-y divide-slate-100">
+                                    ${ch.topics.map(t => `
+                                        <div onclick="navigateTo('topic-detail', {subjectId:'${subjObj.id}', topicTitle:'${t.replace(/'/g, "\\'")}'})" class="py-2 flex items-center justify-between hover:bg-slate-50 px-1 rounded cursor-pointer transition text-xs">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fa-regular fa-file-lines text-brand-600"></i>
+                                                <span class="text-slate-700 font-medium">${t}</span>
+                                            </div>
+                                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTopicDetailView(params) {
+            const topicTitle = params.topicTitle || "General Pharmacopoeia & History";
+            const activeTab = state.topicTab || "learn";
+
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <button onclick="navigateTo('study')" class="text-xs font-bold text-brand-600 flex items-center space-x-1 hover:underline">
+                        <i class="fa-solid fa-arrow-left"></i><span>Back to Syllabus</span>
+                    </button>
+
+                    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded">
+                            OFFICIAL PCI SYLLABUS TOPIC
+                        </span>
+                        <h2 class="text-base font-extrabold text-slate-900 mt-1">${topicTitle}</h2>
+                    </div>
+
+                    <!-- 6 Study Tabs -->
+                    <div class="flex border-b border-slate-200 text-xs overflow-x-auto no-scrollbar space-x-1 bg-white p-1 rounded-t-xl border-x border-t">
+                        <button onclick="state.topicTab='learn'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='learn'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-book-open mr-1"></i>Learn
+                        </button>
+                        <button onclick="state.topicTab='notes'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='notes'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-note-sticky mr-1"></i>Notes
+                        </button>
+                        <button onclick="state.topicTab='questions'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='questions'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-circle-question mr-1"></i>Questions
+                        </button>
+                        <button onclick="state.topicTab='pyqs'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='pyqs'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-award mr-1"></i>PYQs
+                        </button>
+                        <button onclick="state.topicTab='practice'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='practice'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-vial mr-1"></i>Practice
+                        </button>
+                        <button onclick="state.topicTab='revision'; renderApp();" class="px-3 py-2 shrink-0 ${activeTab==='revision'?'active-tab':'text-slate-500'}">
+                            <i class="fa-solid fa-rotate mr-1"></i>Revision
+                        </button>
+                    </div>
+
+                    <!-- Tab Content Renderer -->
+                    <div class="bg-white rounded-b-xl border-x border-b border-slate-200 p-4 min-h-[300px]">
+                        ${renderTopicTabContent(activeTab, topicTitle)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTopicTabContent(tab, topicTitle) {
+            if (tab === 'learn') {
+                return `
+                    <div class="space-y-4 text-xs text-slate-700 leading-relaxed">
+                        <div class="bg-blue-50 border-l-4 border-blue-600 p-3 rounded-r-lg">
+                            <h4 class="font-bold text-blue-900 text-sm mb-1">Key Concept Summary</h4>
+                            <p>Official notes aligned with PCI ER-2020 syllabus regulations. Designed for high-scoring exam preparation.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm mb-2">1. Overview & Definition</h3>
+                            <p class="mb-2">A Pharmacopoeia is an official book containing a list of medicinal drugs with their effects, formulas, standards of purity, and methods for preparation.</p>
+                            <p>The term comes from Ancient Greek <i>pharmakon</i> (medicine) + <i>poiein</i> (to make).</p>
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm mb-2">2. Indian Pharmacopoeia (IP) Historical Timeline</h3>
+                            <div class="border rounded-lg overflow-hidden border-slate-200">
+                                <table class="w-full text-left text-[11px] divide-y divide-slate-200">
+                                    <thead class="bg-slate-100 font-bold text-slate-700">
+                                        <tr><th class="p-2">Edition</th><th class="p-2">Year Published</th><th class="p-2">Key Highlights</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr><td class="p-2 font-bold">1st Edition</td><td class="p-2">1955</td><td class="p-2">Edited by Dr. B.N. Ghosh</td></tr>
+                                        <tr><td class="p-2 font-bold">2nd Edition</td><td class="p-2">1966</td><td class="p-2">Supplement added in 1975</td></tr>
+                                        <tr><td class="p-2 font-bold">8th Edition</td><td class="p-2">2018</td><td class="p-2">Focus on Herbs, Biologicals & NDDS</td></tr>
+                                        <tr><td class="p-2 font-bold">9th Edition</td><td class="p-2">2022</td><td class="p-2">Current Edition with 92 new monographs</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                            <h4 class="font-bold text-amber-900 mb-1"><i class="fa-solid fa-lightbulb"></i> Exam Tip</h4>
+                            <p class="text-amber-800">In 5-mark short note questions, always draw the timeline table and mention the Chairman name (Dr. B.N. Ghosh for 1st Edition).</p>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'notes') {
+                return `
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-slate-900">Personal & Revision Notes</h3>
+                            <button onclick="savePersonalNote('${topicTitle}')" class="px-2.5 py-1 bg-brand-600 text-white font-bold rounded-md hover:bg-brand-700">
+                                Save Note
+                            </button>
+                        </div>
+                        <textarea id="personal-note-input" rows="6" placeholder="Type your personal summary notes, mnemonics or exam pointers for this topic here..." class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none text-xs"></textarea>
+                    </div>
+                `;
+            } else if (tab === 'questions') {
+                const qs = QUESTION_BANK.filter(q => q.subject === state.viewParams?.subjectId || q.part === 'part-1');
+                return `
+                    <div class="space-y-3 text-xs">
+                        <h3 class="font-bold text-slate-900">Practice MCQs for this topic (${qs.length})</h3>
+                        ${qs.map(q => renderQuestionCard(q)).join('')}
+                    </div>
+                `;
+            } else if (tab === 'pyqs') {
+                const pyqs = QUESTION_BANK.filter(q => q.sourceType === 'VERIFIED_PYQ');
+                return `
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-amber-800 font-semibold flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-amber-600"></i>
+                            <span>Strictly Verified Board PYQs for ${topicTitle}</span>
+                        </div>
+                        ${pyqs.map(q => renderQuestionCard(q)).join('')}
+                    </div>
+                `;
+            } else if (tab === 'practice') {
+                return `
+                    <div class="text-center py-6 space-y-3">
+                        <div class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center mx-auto text-xl">
+                            <i class="fa-solid fa-vial-circle-check"></i>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-900">Start Topic Practice Test</h3>
+                        <p class="text-xs text-slate-500 max-w-xs mx-auto">Configure a test with strict PCI 10–50 question limits.</p>
+                        <button onclick="startQuickTest(10)" class="px-4 py-2 bg-brand-600 text-white font-bold rounded-xl shadow hover:bg-brand-700 transition text-xs">
+                            Start 10-Question Test
+                        </button>
+                    </div>
+                `;
+            } else if (tab === 'revision') {
+                return `
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-xs text-slate-900">Quick Revision Cards</h3>
+                        <div class="p-4 bg-slate-100 rounded-xl text-center border border-slate-200 space-y-2">
+                            <div class="text-xs font-bold text-brand-700">Mnemonic for IP Editions</div>
+                            <p class="text-xs text-slate-600 italic">"Ghosh Gave Great Guidelines In First Edition (1955)"</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderQuestionCard(q) {
+            const isBookmarked = state.bookmarks.includes(q.id);
+            return `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-bold ${q.sourceType === 'VERIFIED_PYQ' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-slate-200 text-slate-700'}">
+                                ${q.sourceType === 'VERIFIED_PYQ' ? `VERIFIED PYQ (${q.board} ${q.sourceYear})` : q.sourceType}
+                            </span>
+                        </div>
+                        <button onclick="toggleBookmark('${q.id}')" class="text-slate-400 hover:text-amber-500">
+                            <i class="fa-${isBookmarked ? 'solid text-amber-500' : 'regular'} fa-bookmark"></i>
+                        </button>
+                    </div>
+                    <p class="font-bold text-slate-800 text-xs">${q.text}</p>
+                    <div class="space-y-1 pt-1">
+                        ${q.options.map((opt, idx) => `
+                            <div class="p-2 rounded-lg bg-white border border-slate-200 text-xs flex items-center justify-between">
+                                <span>${String.fromCharCode(65+idx)}. ${opt}</span>
+                                ${idx === q.correctAnswer ? '<i class="fa-solid fa-check text-emerald-600"></i>' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="p-2 bg-emerald-50 rounded-lg text-[11px] text-emerald-900 border border-emerald-200 mt-2">
+                        <span class="font-bold">Explanation:</span> ${q.explanation}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuestionBankView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">PCI Question Bank</h2>
+                            <p class="text-xs text-slate-500">Filter by Subject, Chapter & Difficulty</p>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-2 text-xs font-semibold">
+                        <select onchange="filterQuestionsBySubject(this.value)" class="p-2 rounded-lg border border-slate-300 bg-slate-50 focus:outline-none">
+                            <option value="all">All Subjects</option>
+                            <option value="pharmaceutics">Pharmaceutics</option>
+                            <option value="pharm-chem">Pharmaceutical Chemistry</option>
+                            <option value="pharmacognosy">Pharmacognosy</option>
+                            <option value="hap">Human Anatomy & Physiology</option>
+                            <option value="pharmacy-law">Pharmacy Law & Ethics</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-3">
+                        ${QUESTION_BANK.map(q => renderQuestionCard(q)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPYQView() {
+            const pyqs = QUESTION_BANK.filter(q => q.sourceType === 'VERIFIED_PYQ');
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <div class="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-2xl p-4 shadow-md">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <i class="fa-solid fa-award text-amber-300 text-lg"></i>
+                            <h2 class="text-lg font-extrabold">Verified Board PYQs</h2>
+                        </div>
+                        <p class="text-xs text-amber-100">Official previous-year examination papers verified against Board standards (BTEUP, MSBTE, RGUHS).</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        ${pyqs.map(q => renderQuestionCard(q)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTestsConfigView() {
+            return `
+                <div class="space-y-5 animate-in fade-in duration-200">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">D.Pharm Examination Engine</h2>
+                        <p class="text-xs text-slate-500">Select Test Type & Set Strictly 10–50 Questions</p>
+                    </div>
+
+                    <!-- Strict Rules Callout -->
+                    <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-800 space-y-1">
+                        <div class="font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                            <span>PCI ER-2020 Exam Rules Enforced</span>
+                        </div>
+                        <p class="text-[11px] text-rose-700">Maximum questions per test is strictly limited to 50 questions to ensure focused learning.</p>
+                    </div>
+
+                    <!-- Config Card -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">1. Select Test Type</label>
+                            <select id="test-type-select" class="w-full p-2.5 rounded-lg border border-slate-300 font-semibold focus:ring-2 focus:ring-brand-500">
+                                <option value="Subject Test">Subject Test (e.g. Pharmaceutics)</option>
+                                <option value="PYQ Test">Verified PYQs Test</option>
+                                <option value="Mixed Test">Full Syllabus Mixed Mock</option>
+                                <option value="Weak Topic Test">Weak Areas Focus Test</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">2. Select Question Count (Strict Max 50)</label>
+                            <div class="grid grid-cols-5 gap-2 font-bold text-center">
+                                <button onclick="selectQuestionCount(10)" id="qcnt-10" class="qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 bg-brand-50 text-brand-700 border-brand-500">10</button>
+                                <button onclick="selectQuestionCount(20)" id="qcnt-20" class="qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500">20</button>
+                                <button onclick="selectQuestionCount(30)" id="qcnt-30" class="qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500">30</button>
+                                <button onclick="selectQuestionCount(40)" id="qcnt-40" class="qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500">40</button>
+                                <button onclick="selectQuestionCount(50)" id="qcnt-50" class="qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500">50</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">3. Timer Option</label>
+                            <select id="test-timer-select" class="w-full p-2.5 rounded-lg border border-slate-300 font-semibold">
+                                <option value="15">15 Minutes</option>
+                                <option value="30" selected>30 Minutes</option>
+                                <option value="45">45 Minutes</option>
+                                <option value="0">No Timer (Practice Mode)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="initiateExamSession()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl shadow-lg transition text-sm">
+                            <i class="fa-solid fa-play mr-2"></i>Start Examination
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let selectedQCount = 10;
+        function selectQuestionCount(cnt) {
+            selectedQCount = cnt;
+            document.querySelectorAll('.qcnt-btn').forEach(btn => {
+                btn.className = "qcnt-btn p-2.5 rounded-xl border border-slate-200 hover:border-brand-500";
+            });
+            document.getElementById(`qcnt-${cnt}`).className = "qcnt-btn p-2.5 rounded-xl border border-brand-500 bg-brand-50 text-brand-700 font-bold";
+        }
+
+        function initiateExamSession() {
+            const testType = document.getElementById('test-type-select').value;
+            const timerMins = parseInt(document.getElementById('test-timer-select').value);
+            
+            // Build question set capped at max 50
+            let available = [...QUESTION_BANK];
+            // duplicate array if needed for demo simulation
+            while(available.length < selectedQCount) {
+                available = available.concat(QUESTION_BANK);
+            }
+            const testQuestions = available.slice(0, selectedQCount);
+
+            state.testState = {
+                type: testType,
+                questions: testQuestions,
+                currentIndex: 0,
+                userAnswers: {},
+                markedForReview: {},
+                timeLeftSeconds: timerMins * 60,
+                timerInterval: null
+            };
+
+            state.currentView = 'test-runner';
+            renderApp();
+
+            if (timerMins > 0) {
+                state.testState.timerInterval = setInterval(() => {
+                    if (state.testState.timeLeftSeconds <= 0) {
+                        clearInterval(state.testState.timerInterval);
+                        submitExam();
+                    } else {
+                        state.testState.timeLeftSeconds--;
+                        const timerEl = document.getElementById('exam-timer-display');
+                        if (timerEl) {
+                            const m = Math.floor(state.testState.timeLeftSeconds / 60);
+                            const s = state.testState.timeLeftSeconds % 60;
+                            timerEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function renderTestRunnerView() {
+            const ts = state.testState;
+            const q = ts.questions[ts.currentIndex];
+            const qNum = ts.currentIndex + 1;
+            const selectedAns = ts.userAnswers[ts.currentIndex];
+
+            return `
+                <div class="space-y-4 animate-in fade-in duration-150">
+                    <!-- Top Bar with Progress & Timer -->
+                    <div class="bg-slate-900 text-white p-3 rounded-2xl flex justify-between items-center text-xs shadow-md">
+                        <div>
+                            <span class="font-bold text-brand-400">Question ${qNum} / ${ts.questions.length}</span>
+                            <div class="text-[10px] text-slate-400">${ts.type}</div>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-clock text-amber-400"></i>
+                            <span id="exam-timer-display" class="font-mono font-bold text-sm">--:--</span>
+                        </div>
+                        <button onclick="submitExam()" class="bg-rose-600 hover:bg-rose-700 px-3 py-1.5 rounded-lg font-bold text-xs shadow">
+                            Submit Test
+                        </button>
+                    </div>
+
+                    <!-- Question Palette Accordion Toggle -->
+                    <div class="bg-white p-2 rounded-xl border border-slate-200 flex flex-wrap gap-1.5 justify-center text-xs">
+                        ${ts.questions.map((_, idx) => {
+                            let bg = "bg-slate-100 text-slate-600";
+                            if (ts.userAnswers[idx] !== undefined) bg = "bg-emerald-600 text-white font-bold";
+                            if (ts.markedForReview[idx]) bg = "bg-purple-600 text-white font-bold";
+                            if (idx === ts.currentIndex) bg += " ring-2 ring-brand-500 ring-offset-1";
+                            return `<button onclick="jumpToExamQuestion(${idx})" class="w-7 h-7 rounded-lg ${bg} flex items-center justify-center text-[11px] transition">${idx+1}</button>`;
+                        }).join('')}
+                    </div>
+
+                    <!-- Question Box -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                                Single Choice • 1 Mark
+                            </span>
+                            <button onclick="toggleMarkReview(${ts.currentIndex})" class="text-xs font-bold ${ts.markedForReview[ts.currentIndex] ? 'text-purple-600' : 'text-slate-400'}">
+                                <i class="fa-solid fa-flag mr-1"></i>Review
+                            </button>
+                        </div>
+
+                        <p class="font-extrabold text-slate-900 text-sm leading-snug">${q.text}</p>
+
+                        <div class="space-y-2 pt-2 text-xs">
+                            ${q.options.map((opt, idx) => `
+                                <div onclick="selectExamOption(${idx})" class="p-3 rounded-xl border transition cursor-pointer flex items-center justify-between ${selectedAns === idx ? 'bg-brand-50 border-brand-500 font-bold text-brand-900 shadow-sm' : 'border-slate-200 hover:border-slate-300 text-slate-800'}">
+                                    <span>${String.fromCharCode(65+idx)}. ${opt}</span>
+                                    <div class="w-4 h-4 rounded-full border flex items-center justify-center ${selectedAns === idx ? 'border-brand-600 bg-brand-600 text-white' : 'border-slate-300'}">
+                                        ${selectedAns === idx ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav buttons -->
+                    <div class="flex justify-between items-center text-xs">
+                        <button onclick="prevExamQuestion()" ${ts.currentIndex === 0 ? 'disabled class="opacity-40 px-4 py-2 bg-slate-200 text-slate-600 rounded-xl font-bold"' : 'class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-300"'}>
+                            Previous
+                        </button>
+                        <button onclick="nextExamQuestion()" ${ts.currentIndex === ts.questions.length - 1 ? 'disabled class="opacity-40 px-4 py-2 bg-brand-600 text-white rounded-xl font-bold"' : 'class="px-5 py-2 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 shadow"'}>
+                            Next Question
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectExamOption(idx) {
+            state.testState.userAnswers[state.testState.currentIndex] = idx;
+            renderApp();
+        }
+
+        function toggleMarkReview(idx) {
+            state.testState.markedForReview[idx] = !state.testState.markedForReview[idx];
+            renderApp();
+        }
+
+        function jumpToExamQuestion(idx) {
+            state.testState.currentIndex = idx;
+            renderApp();
+        }
+
+        function prevExamQuestion() {
+            if (state.testState.currentIndex > 0) {
+                state.testState.currentIndex--;
+                renderApp();
+            }
+        }
+
+        function nextExamQuestion() {
+            if (state.testState.currentIndex < state.testState.questions.length - 1) {
+                state.testState.currentIndex++;
+                renderApp();
+            }
+        }
+
+        function submitExam() {
+            if (state.testState.timerInterval) clearInterval(state.testState.timerInterval);
+            
+            const ts = state.testState;
+            let correct = 0;
+            let wrong = 0;
+            let skipped = 0;
+
+            ts.questions.forEach((q, idx) => {
+                const userAns = ts.userAnswers[idx];
+                if (userAns === undefined) {
+                    skipped++;
+                } else if (userAns === q.correctAnswer) {
+                    correct++;
+                } else {
+                    wrong++;
+                    if (!state.wrongQuestions.includes(q.id)) {
+                        state.wrongQuestions.push(q.id);
+                    }
+                }
+            });
+
+            state.userProfile.totalAttemptedQs += (correct + wrong);
+            state.userProfile.correctCount += correct;
+
+            state.lastTestResult = {
+                total: ts.questions.length,
+                correct,
+                wrong,
+                skipped,
+                score: correct,
+                percentage: Math.round((correct / ts.questions.length) * 100),
+                questions: ts.questions,
+                userAnswers: ts.userAnswers
+            };
+
+            state.currentView = 'test-result';
+            renderApp();
+        }
+
+        function renderTestResultView() {
+            const res = state.lastTestResult;
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 text-xs">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm text-center space-y-3">
+                        <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-2xl font-black ${res.percentage >= 50 ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-rose-100 text-rose-700 border border-rose-300'}">
+                            ${res.percentage}%
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900">
+                                ${res.percentage >= 50 ? 'Exam Passed! 🎉' : 'Needs Practice 📖'}
+                            </h2>
+                            <p class="text-slate-500">Score: ${res.score} / ${res.total}</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
+                            <div class="p-2 bg-emerald-50 rounded-lg text-emerald-800">
+                                <div class="font-extrabold text-sm">${res.correct}</div>
+                                <div class="text-[10px]">Correct</div>
+                            </div>
+                            <div class="p-2 bg-rose-50 rounded-lg text-rose-800">
+                                <div class="font-extrabold text-sm">${res.wrong}</div>
+                                <div class="text-[10px]">Wrong</div>
+                            </div>
+                            <div class="p-2 bg-slate-100 rounded-lg text-slate-700">
+                                <div class="font-extrabold text-sm">${res.skipped}</div>
+                                <div class="text-[10px]">Skipped</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button onclick="navigateTo('wrong-questions')" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow transition">
+                            Practice Mistakes
+                        </button>
+                        <button onclick="navigateTo('tests')" class="flex-1 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow transition">
+                            Take Another Test
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRevisionView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Revision Center</h2>
+                        <p class="text-xs text-slate-500">Interactive Flashcards & Rapid Memorization</p>
+                    </div>
+
+                    <!-- Flashcard Swiper Component -->
+                    <div id="flashcard-box" onclick="flipFlashcard()" class="perspective-1000 w-full h-52 cursor-pointer">
+                        <div id="flashcard-inner" class="relative w-full h-full rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 text-white p-6 flex flex-col justify-between shadow-xl transition-transform duration-500 transform-style-3d border border-white/20">
+                            <div class="flex justify-between items-center text-xs text-brand-200 font-bold uppercase tracking-wider">
+                                <span id="fc-subject">Pharmaceutics</span>
+                                <span>Tap to Flip <i class="fa-solid fa-rotate-left ml-1"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p id="fc-text" class="text-base font-extrabold text-white">What is the primary mechanism of Ball Mill?</p>
+                            </div>
+                            <div class="text-[10px] text-center text-brand-200 uppercase font-semibold">
+                                D.Pharm ER-2020 High-Yield
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3 text-xs font-bold">
+                        <button onclick="nextFlashcard('know')" class="flex-1 py-3 bg-emerald-600 text-white rounded-xl shadow hover:bg-emerald-700">
+                            <i class="fa-solid fa-check mr-1"></i>I Know This
+                        </button>
+                        <button onclick="nextFlashcard('review')" class="flex-1 py-3 bg-amber-600 text-white rounded-xl shadow hover:bg-amber-700">
+                            <i class="fa-solid fa-rotate mr-1"></i>Review Again
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let currentFcIdx = 0;
+        let fcFlipped = false;
+
+        function flipFlashcard() {
+            const fc = FLASHCARDS[currentFcIdx];
+            fcFlipped = !fcFlipped;
+            const textEl = document.getElementById('fc-text');
+            if (textEl) {
+                textEl.innerText = fcFlipped ? fc.back : fc.front;
+            }
+        }
+
+        function nextFlashcard() {
+            currentFcIdx = (currentFcIdx + 1) % FLASHCARDS.length;
+            fcFlipped = false;
+            const fc = FLASHCARDS[currentFcIdx];
+            document.getElementById('fc-subject').innerText = fc.subject;
+            document.getElementById('fc-text').innerText = fc.front;
+        }
+
+        function renderAITeacherView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 flex flex-col h-[75vh]">
+                    <div class="bg-purple-900 text-white p-3 rounded-2xl flex items-center justify-between shadow-md shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-9 h-9 rounded-xl bg-purple-700 flex items-center justify-center text-lg">
+                                🤖
+                            </div>
+                            <div>
+                                <h2 class="font-extrabold text-xs">AI D.Pharm Teacher</h2>
+                                <p class="text-[10px] text-purple-200">Gemini 3 Flash • ER-2020 Specialist</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-purple-800 text-purple-200 px-2 py-0.5 rounded-full">Educational AI</span>
+                    </div>
+
+                    <!-- Chat Container -->
+                    <div id="ai-chat-messages" class="flex-1 bg-white rounded-2xl border border-slate-200 p-3 overflow-y-auto space-y-3 text-xs">
+                        <div class="flex items-start space-x-2">
+                            <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs shrink-0">AI</div>
+                            <div class="bg-purple-50 border border-purple-100 p-2.5 rounded-2xl rounded-tl-none text-purple-950 max-w-[85%] leading-relaxed">
+                                Hello ${state.userProfile.name}! I am your PCI D.Pharm AI Teacher. Ask me any doubt in Pharmaceutics, Chemistry, Pharmacology or Laws. I can explain in Simple English, Hinglish, or Hindi!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Box -->
+                    <div class="flex items-center space-x-2 shrink-0 bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
+                        <input type="text" id="ai-teacher-input" onkeypress="if(event.key==='Enter') sendAITeacherMessage()" placeholder="Ask your doubt e.g., 'Explain Limit test for Iron in Hinglish'..." class="flex-1 text-xs border-none focus:outline-none p-1">
+                        <button onclick="sendAITeacherMessage()" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-xs shadow">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function sendAITeacherMessage() {
+            const input = document.getElementById('ai-teacher-input');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            const chatBox = document.getElementById('ai-chat-messages');
+            chatBox.innerHTML += `
+                <div class="flex items-start justify-end space-x-2">
+                    <div class="bg-brand-600 text-white p-2.5 rounded-2xl rounded-tr-none max-w-[85%] leading-relaxed">
+                        ${userMsg}
+                    </div>
+                </div>
+            `;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const loadingId = "loading-" + Date.now();
+            chatBox.innerHTML += `
+                <div id="${loadingId}" class="flex items-start space-x-2">
+                    <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs shrink-0">AI</div>
+                    <div class="bg-purple-50 p-2.5 rounded-2xl rounded-tl-none text-purple-700 italic">
+                        Thinking and referencing PCI ER-2020 textbook database...
+                    </div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const systemPrompt = "You are an expert, encouraging D.Pharm (Diploma in Pharmacy) tutor in India following PCI Education Regulations 2020 (ER-2020). Provide structured, easy-to-understand explanations with key points, tables, and exam tips. Adapt language if requested (English, Hinglish, or Hindi). Do not provide personal medical prescriptions.";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userMsg }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const resp = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await resp.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I am currently adjusting my database. Please rephrase your question.";
+
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `
+                    <div class="flex items-start space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs shrink-0">AI</div>
+                        <div class="bg-purple-50 border border-purple-100 p-3 rounded-2xl rounded-tl-none text-purple-950 max-w-[85%] leading-relaxed whitespace-pre-wrap">
+                            ${aiText}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById(loadingId).remove();
+                chatBox.innerHTML += `
+                    <div class="flex items-start space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs shrink-0">AI</div>
+                        <div class="bg-rose-50 border border-rose-100 p-2.5 rounded-2xl text-rose-900">
+                            Connection error. Please check your connection and try again.
+                        </div>
+                    </div>
+                `;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function renderAISolverView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 text-xs">
+                    <div class="bg-indigo-900 text-white p-4 rounded-2xl shadow-md">
+                        <h2 class="font-extrabold text-base mb-1">AI Question & Calculation Solver</h2>
+                        <p class="text-indigo-200">Type or paste any complex Pharmacy question or dose calculation for step-by-step solutions.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                        <textarea id="solver-input" rows="4" placeholder="Paste your question here (e.g. 'Calculate the proof spirit strength of 40% v/v alcohol')..." class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        <button onclick="solveQuestionWithAI()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Solve Step-by-Step
+                        </button>
+                    </div>
+
+                    <div id="solver-result-container" class="hidden bg-white p-4 rounded-2xl border border-slate-200 space-y-2 shadow-sm leading-relaxed">
+                        <h3 class="font-bold text-slate-900 text-sm border-b pb-2">Step-by-Step Explanation</h3>
+                        <div id="solver-result-text" class="whitespace-pre-wrap text-slate-700"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function solveQuestionWithAI() {
+            const query = document.getElementById('solver-input').value.trim();
+            if (!query) return;
+
+            const resBox = document.getElementById('solver-result-container');
+            const resText = document.getElementById('solver-result-text');
+            resBox.classList.remove('hidden');
+            resText.innerText = "Analyzing question and calculating formula...";
+
+            try {
+                const systemPrompt = "You are an expert Pharmacy calculation and MCQ solver. Break down the user question into: 1. Question Interpretation, 2. Correct Answer, 3. Step-by-Step Formula & Working, 4. Exam Tip.";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+
+                const resp = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const data = await resp.json();
+                resText.innerText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to solve. Please rephrase the question.";
+            } catch (err) {
+                resText.innerText = "Error connecting to AI solver service.";
+            }
+        }
+
+        function renderStudyPlannerView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 text-xs">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Personalised Study Planner</h2>
+                            <p class="text-slate-500">Targeted Schedule for D.Pharm Board Exams</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                        <div class="flex justify-between items-center pb-2 border-b">
+                            <span class="font-bold text-slate-800">Daily Study Plan (${state.userProfile.studyTime})</span>
+                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Active</span>
+                        </div>
+                        <div class="space-y-2">
+                            ${state.studyPlannerTasks.map(t => `
+                                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="t.done=!t.done; renderApp();" class="rounded text-brand-600 focus:ring-brand-500">
+                                        <span class="${t.done ? 'line-through text-slate-400' : 'text-slate-800 font-semibold'}">${t.text}</span>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 font-bold">${t.day}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBookmarksView() {
+            const bks = QUESTION_BANK.filter(q => state.bookmarks.includes(q.id));
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <h2 class="text-lg font-bold text-slate-900">My Bookmarked Questions (${bks.length})</h2>
+                    ${bks.length === 0 ? '<p class="text-xs text-slate-500">No bookmarked questions yet.</p>' : bks.map(q => renderQuestionCard(q)).join('')}
+                </div>
+            `;
+        }
+
+        function renderWrongQuestionsView() {
+            const wrgs = QUESTION_BANK.filter(q => state.wrongQuestions.includes(q.id));
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200">
+                    <div class="bg-red-50 border border-red-200 p-3 rounded-2xl text-xs text-red-900 flex justify-between items-center">
+                        <div>
+                            <span class="font-bold">My Mistakes Repository (${wrgs.length})</span>
+                            <p class="text-[10px] text-red-700">Questions you answered incorrectly during tests.</p>
+                        </div>
+                        <button onclick="startQuickTest(${Math.min(wrgs.length || 10, 50)})" class="px-3 py-1.5 bg-red-600 text-white rounded-lg font-bold text-xs shadow">
+                            Re-Test Mistakes
+                        </button>
+                    </div>
+                    ${wrgs.map(q => renderQuestionCard(q)).join('')}
+                </div>
+            `;
+        }
+
+        function renderProgressView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 text-xs">
+                    <h2 class="text-lg font-bold text-slate-900">Comprehensive Progress Analytics</h2>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                        <div class="flex justify-between font-bold">
+                            <span>Pharmaceutics Syllabus</span>
+                            <span class="text-brand-600">45%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5">
+                            <div class="bg-brand-600 h-2.5 rounded-full" style="width: 45%"></div>
+                        </div>
+
+                        <div class="flex justify-between font-bold pt-2">
+                            <span>Pharmaceutical Chemistry</span>
+                            <span class="text-emerald-600">30%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5">
+                            <div class="bg-emerald-600 h-2.5 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminView() {
+            return `
+                <div class="space-y-4 animate-in fade-in duration-200 text-xs">
+                    <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-md flex justify-between items-center">
+                        <div>
+                            <h2 class="font-extrabold text-sm">Admin Verification Panel</h2>
+                            <p class="text-[10px] text-slate-400">Content & PYQ Quality Control</p>
+                        </div>
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded">Admin Active</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                        <h3 class="font-bold text-slate-900">Add / Verify Question Entry</h3>
+                        <input type="text" placeholder="Question Text" class="w-full p-2 border rounded-lg">
+                        <div class="grid grid-cols-2 gap-2">
+                            <select class="p-2 border rounded-lg">
+                                <option>VERIFIED_PYQ</option>
+                                <option>ORIGINAL_QUESTION</option>
+                            </select>
+                            <input type="text" placeholder="Board (e.g. BTEUP)" class="p-2 border rounded-lg">
+                        </div>
+                        <button onclick="alert('Question added and queued for verification review.')" class="w-full py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow">
+                            Save to Database
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ---------------- HELPER UTILITIES ---------------- */
+        function toggleBookmark(qid) {
+            const idx = state.bookmarks.indexOf(qid);
+            if (idx >= 0) state.bookmarks.splice(idx, 1);
+            else state.bookmarks.push(qid);
+            renderApp();
+        }
+
+        function startQuickTest(count) {
+            selectQuestionCount(count);
+            state.currentView = 'tests';
+            renderApp();
+            initiateExamSession();
+        }
+
+        function filterQuestionsBySubject(subj) {
+            // Re-render
+            renderApp();
+        }
+
+        function openSearchModal() {
+            document.getElementById('search-modal').classList.remove('hidden');
+            document.getElementById('global-search-input').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('search-modal').classList.add('hidden');
+        }
+
+        function handleGlobalSearch(query) {
+            const container = document.getElementById('search-results-container');
+            if (!query.trim()) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400"><p>Type keywords...</p></div>`;
+                return;
+            }
+            const term = query.toLowerCase();
+            const matched = QUESTION_BANK.filter(q => q.text.toLowerCase().includes(term) || q.subject.toLowerCase().includes(term));
+            
+            if (matched.length === 0) {
+                container.innerHTML = `<p class="text-center py-4 text-slate-400">No matching questions or topics found.</p>`;
+            } else {
+                container.innerHTML = matched.map(q => `
+                    <div onclick="closeSearchModal(); navigateTo('question-bank')" class="p-2 bg-slate-50 hover:bg-slate-100 rounded-lg cursor-pointer">
+                        <div class="font-bold text-slate-800 text-xs">${q.text}</div>
+                        <div class="text-[10px] text-slate-500 uppercase">${q.subject} • ${q.sourceType}</div>
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>
+```
